@@ -1,23 +1,36 @@
-export default class BoundaryPoints {
-  private begin: number;
-  private end: number;
+export interface IBoundaryPoints {
+  getFixedPoint: (
+    position: number,
+    offset: number,
+  ) => {
+    position: number;
+    realValue: number;
+  };
+}
 
-  constructor(begin: number, end: number) {
+export default class BoundaryPoints implements IBoundaryPoints {
+  begin: number;
+  end: number;
+
+  realBegin: number;
+  realEnd: number;
+
+  step: number;
+
+  constructor(
+    begin: number,
+    end: number,
+    step: number,
+    realBegin: number,
+    realEnd: number,
+  ) {
     this.begin = begin;
     this.end = end;
+    this.realBegin = realBegin;
+    this.realEnd = realEnd;
+
+    this.step = step;
   }
-
-  getFixedPoint = (position: number, offset: number) => {
-    const newFlattenPosition = offset + position;
-
-    if (newFlattenPosition < this.begin) {
-      position = this.begin - offset;
-    } else if (newFlattenPosition > this.end) {
-      position = this.end - offset;
-    }
-
-    return position;
-  };
 
   updatePoints = (begin: number = this.begin, end: number = this.end) => {
     this.setBegin(begin);

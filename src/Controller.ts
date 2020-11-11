@@ -9,9 +9,18 @@ class Controller {
 
   boundaryPoints: BoundaryPoints;
 
+  pointWidth: number;
+
+  private _onValueChange: (values: [number, number]) => void;
+
   constructor(
     leftPointBeginPosition: number,
     pointsDistance: number,
+    realBegin: number,
+    realEnd: number,
+    pointWidth: number,
+    step: number,
+    onValueChange: (values: [number, number]) => void,
     boundaryBegin?: number,
     boundaryEnd?: number,
   ) {
@@ -24,22 +33,44 @@ class Controller {
       boundaryEnd = rightPointBeginPosition;
     }
 
-    this.boundaryPoints = new BoundaryPoints(boundaryBegin, boundaryEnd);
+    this.boundaryPoints = new BoundaryPoints(
+      boundaryBegin,
+      boundaryEnd,
+      step,
+      realBegin,
+      realEnd,
+    );
 
     this.x1 = new AnimatedPoint(
       leftPointBeginPosition,
-      this.boundaryPoints.getFixedPoint,
-      this._activeLineUpdatePosition,
+      this.boundaryPoints,
+      this._handlePointPositionChange,
     );
     this.x2 = new AnimatedPoint(
       leftPointBeginPosition,
-      this.boundaryPoints.getFixedPoint,
-      this._activeLineUpdatePosition,
+      this.boundaryPoints,
+      this._handlePointPositionChange,
     );
 
-    this.activeLineBegin = new AnimatedPoint(leftPointBeginPosition);
-    this.activeLineWidth = new AnimatedPoint(rightPointBeginPosition);
+    this.activeLineBegin = new AnimatedPoint(
+      leftPointBeginPosition,
+      this.boundaryPoints,
+    );
+    this.activeLineWidth = new AnimatedPoint(
+      rightPointBeginPosition,
+      this.boundaryPoints,
+    );
+
+    this.pointWidth = pointWidth;
+    this._onValueChange = onValueChange;
   }
+
+  _handlePointPositionChange = (withoutCallback?: boolean) => {
+    if (!withoutCallback) {
+      this._onValueChange([this.x1.realValue, this.x2.realValue]);
+    }
+    this._activeLineUpdatePosition();
+  };
 
   private _activeLineUpdatePosition = () => {
     const x1: number = this.x1.getRealPointValue();
@@ -48,8 +79,8 @@ class Controller {
     const lineBegin = x1 < x2 ? x1 : x2;
     const lineWidth = Math.abs(x1 - x2);
 
-    this.activeLineBegin.setPoint(lineBegin);
-    this.activeLineWidth.setPoint(lineWidth + 15);
+    this.activeLineBegin.silentlySetPoint(lineBegin);
+    this.activeLineWidth.silentlySetPoint(lineWidth + this.pointWidth);
   };
 }
 

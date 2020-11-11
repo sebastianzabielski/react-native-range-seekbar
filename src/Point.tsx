@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Animated,
@@ -7,18 +7,19 @@ import {
   PanResponderGestureState,
   PanResponderInstance,
   ViewStyle,
-} from "react-native";
-import AnimatedPoint from "./AnimatedPoint";
+} from 'react-native';
+import AnimatedPoint from './AnimatedPoint';
 
-interface DotProps {
+interface PointProps {
   point: AnimatedPoint;
   style?: ViewStyle;
+  width: number;
 }
 
-export class Dot extends Component<DotProps> {
+export class Point extends Component<PointProps> {
   panResponder: PanResponderInstance;
 
-  constructor(props: DotProps) {
+  constructor(props: PointProps) {
     super(props);
 
     this.panResponder = this.getInitialPanResponder();
@@ -32,36 +33,35 @@ export class Dot extends Component<DotProps> {
       onStartShouldSetPanResponderCapture: this.getTrue,
       onMoveShouldSetPanResponder: this.getTrue,
       onMoveShouldSetPanResponderCapture: this.getTrue,
-
-      onPanResponderGrant: () => {
-        this.props.point.startObserve();
-      },
-
+      onPanResponderGrant: this.props.point.startObserve,
       onPanResponderMove: (
         e: GestureResponderEvent,
-        gestureState: PanResponderGestureState
+        gestureState: PanResponderGestureState,
       ) => {
-        console.log("'move");
         this.props.point.setPoint(gestureState.dx);
       },
-
       onPanResponderTerminationRequest: this.getTrue,
-
-      onPanResponderRelease: () => {
-        this.props.point.stopObserve();
-      },
+      onPanResponderRelease: this.props.point.stopObserve,
       onPanResponderTerminate: this.props.point.stopObserve,
-
       onShouldBlockNativeResponder: this.getTrue,
     });
   };
 
   render() {
-    const { point, style } = this.props;
+    const { point, style, width } = this.props;
     return (
       <Animated.View
         {...this.panResponder.panHandlers}
-        style={[styles.container, style, { left: point.getPoint() }]}
+        style={[
+          styles.container,
+          style,
+          {
+            width: width,
+            height: width,
+            borderRadius: width,
+            left: point.getPoint(),
+          },
+        ]}
       />
     );
   }
@@ -69,13 +69,9 @@ export class Dot extends Component<DotProps> {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-
-    width: 16,
-    height: 16,
-    borderRadius: 16,
-    backgroundColor: "black",
+    position: 'absolute',
+    backgroundColor: 'black',
   },
 });
 
-export default Dot;
+export default Point;

@@ -1,58 +1,101 @@
-import React, { Component } from "react";
-import { View, StyleSheet, LayoutChangeEvent, Animated } from "react-native";
-import Dot from "./Dot";
-import Controller from "./Controller";
+import React, { Component } from 'react';
+import {
+  View,
+  StyleSheet,
+  LayoutChangeEvent,
+  Animated,
+  ViewStyle,
+} from 'react-native';
+import Point from './Point';
+import Controller from './Controller';
 
-export class RangeSeekBar extends Component {
+interface RangeSeekBarProps {
+  activeLineHeight: number;
+  pointWidth: number;
+  activeLineStyle?: ViewStyle;
+  inactiveLineStyle?: ViewStyle;
+  minValue: number;
+  maxValue: number;
+  step: number; //TODO 0 default means that every value is send
+  onValueChange: (values: [number, number]) => void;
+}
+export class RangeSeekBar extends Component<RangeSeekBarProps> {
+  static defaultProps = {
+    activeLineHeight: 7,
+    pointWidth: 15,
+    step: 1,
+  };
+
   state = {
     loading: true,
   };
 
-  test: Controller;
+  controller: Controller;
 
   constructor(props: any) {
     super(props);
 
-    this.test = new Controller(0, 0, 0);
+    this.controller = new Controller(
+      0,
+      0,
+      this.props.minValue,
+      this.props.maxValue,
+      this.props.pointWidth,
+      this.props.step,
+      this.onValueChange,
+    );
   }
 
   block = false;
 
+  onValueChange = async (values: [number, number]) => {
+    console.log('sdfsdfsd', values);
+    this.props.onValueChange(values);
+  };
+
   updateComponentWidth = (event: LayoutChangeEvent) => {
-    const width = event.nativeEvent.layout.width - 15; //TODO
-    this.test.boundaryPoints.setEnd(width);
-    this.test.x2.setPoint(width);
+    const width = event.nativeEvent.layout.width - this.props.pointWidth;
+    this.controller.boundaryPoints.setEnd(width);
+    this.controller.x2.setPoint(width, true);
     this.setState({ loading: false });
   };
 
   renderActiveLine = () => {
     return (
-      <Animated.View
-        style={[
-          styles.absolute,
-          styles.activeLine,
-          {
-            left: this.test.activeLineBegin.getPoint(),
-            width: this.test.activeLineWidth.getPoint(),
-          },
-        ]}
-      />
+      <View style={styles.activeLineContainer}>
+        <Animated.View
+          style={[
+            styles.activeLine,
+            this.props.activeLineStyle,
+            {
+              left: this.controller.activeLineBegin.getPoint(),
+              width: this.controller.activeLineWidth.getPoint(),
+              height: this.props.activeLineHeight,
+            },
+          ]}
+        />
+      </View>
     );
   };
 
   render() {
     const { loading } = this.state;
+    const { pointWidth, inactiveLineStyle } = this.props;
     const ActiveLine = this.renderActiveLine;
     return (
       <>
         <View onLayout={this.updateComponentWidth} style={styles.container}>
-          <View style={styles.inactiveContainer} />
+          <View style={[styles.inactiveContainer, inactiveLineStyle]} />
           <View style={[styles.absolute, styles.animatedContainer]}>
             {!loading && (
               <>
                 <ActiveLine />
-                <Dot point={this.test.x1} style={{ backgroundColor: "red" }} />
-                <Dot point={this.test.x2} />
+                <Point
+                  point={this.controller.x1}
+                  width={pointWidth}
+                  style={{ backgroundColor: 'red' }}
+                />
+                <Point width={pointWidth} point={this.controller.x2} />
               </>
             )}
           </View>
@@ -64,30 +107,37 @@ export class RangeSeekBar extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: '100%',
     height: 16,
-    // backgroundColor: 'gray',
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   absolute: {
-    position: "absolute",
+    position: 'absolute',
+    alignSelf: 'center',
     top: 0,
     bottom: 0,
   },
   animatedContainer: {
     left: 0,
     right: 0,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   inactiveContainer: {
-    width: "100%",
+    marginHorizontal: 5,
     height: 5,
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
+    borderRadius: 16,
+  },
+  activeLineContainer: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   activeLine: {
-    backgroundColor: "green",
+    backgroundColor: 'green',
     borderRadius: 16,
+    position: 'absolute',
   },
 });
 export default RangeSeekBar;
