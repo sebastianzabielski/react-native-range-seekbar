@@ -14,6 +14,8 @@ interface PointProps {
   point: AnimatedPoint;
   style?: ViewStyle;
   width: number;
+  onPressStart?: () => void;
+  onPressEnd?: () => void;
 }
 
 export class Point extends Component<PointProps> {
@@ -27,22 +29,34 @@ export class Point extends Component<PointProps> {
 
   getTrue = () => true;
 
+  handlePanResponderEnd = () => {
+    this.props.onPressEnd && this.props.onPressEnd();
+    this.props.point.stopObserve();
+  };
+
+  handlePanResponderStart = () => {
+    this.props.onPressStart && this.props.onPressStart();
+    this.props.point.startObserve();
+  };
+
+  handlePanResponderMove = (
+    e: GestureResponderEvent,
+    gestureState: PanResponderGestureState,
+  ) => {
+    this.props.point.setPoint(gestureState.dx);
+  };
+
   getInitialPanResponder = () => {
     return PanResponder.create({
       onStartShouldSetPanResponder: this.getTrue,
       onStartShouldSetPanResponderCapture: this.getTrue,
       onMoveShouldSetPanResponder: this.getTrue,
       onMoveShouldSetPanResponderCapture: this.getTrue,
-      onPanResponderGrant: this.props.point.startObserve,
-      onPanResponderMove: (
-        e: GestureResponderEvent,
-        gestureState: PanResponderGestureState,
-      ) => {
-        this.props.point.setPoint(gestureState.dx);
-      },
+      onPanResponderGrant: this.handlePanResponderStart,
+      onPanResponderMove: this.handlePanResponderMove,
       onPanResponderTerminationRequest: this.getTrue,
-      onPanResponderRelease: this.props.point.stopObserve,
-      onPanResponderTerminate: this.props.point.stopObserve,
+      onPanResponderRelease: this.handlePanResponderEnd,
+      onPanResponderTerminate: this.handlePanResponderEnd,
       onShouldBlockNativeResponder: this.getTrue,
     });
   };
