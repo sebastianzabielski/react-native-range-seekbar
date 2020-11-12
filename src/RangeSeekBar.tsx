@@ -14,16 +14,19 @@ interface RangeSeekBarProps {
   pointWidth: number;
   activeLineStyle?: ViewStyle;
   inactiveLineStyle?: ViewStyle;
+  pointStyle?: ViewStyle;
   minValue: number;
   maxValue: number;
-  step: number; //TODO 0 default means that every value is send
+  // step: number; //TODO 0 default means that every value is send
   onValueChange: (values: [number, number]) => void;
+  onPressStart?: () => void;
+  onPressEnd?: () => void;
 }
 export class RangeSeekBar extends Component<RangeSeekBarProps> {
   static defaultProps = {
     activeLineHeight: 7,
     pointWidth: 15,
-    step: 1,
+    // step: 1,
   };
 
   state = {
@@ -41,7 +44,8 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
       this.props.minValue,
       this.props.maxValue,
       this.props.pointWidth,
-      this.props.step,
+      // this.props.step,
+      1, //temporary value will be taken from props in next version
       this.onValueChange,
     );
   }
@@ -49,7 +53,6 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
   block = false;
 
   onValueChange = async (values: [number, number]) => {
-    console.log('sdfsdfsd', values);
     this.props.onValueChange(values);
   };
 
@@ -80,11 +83,24 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
 
   render() {
     const { loading } = this.state;
-    const { pointWidth, inactiveLineStyle } = this.props;
+    const {
+      pointWidth,
+      inactiveLineStyle,
+      pointStyle,
+      onPressStart,
+      onPressEnd,
+      activeLineHeight,
+    } = this.props;
     const ActiveLine = this.renderActiveLine;
+
+    const maxHeight =
+      activeLineHeight > pointWidth ? activeLineHeight : pointWidth;
     return (
       <>
-        <View onLayout={this.updateComponentWidth} style={styles.container}>
+        <View
+          onLayout={this.updateComponentWidth}
+          style={[styles.container, { height: maxHeight }]}
+        >
           <View style={[styles.inactiveContainer, inactiveLineStyle]} />
           <View style={[styles.absolute, styles.animatedContainer]}>
             {!loading && (
@@ -93,9 +109,17 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
                 <Point
                   point={this.controller.x1}
                   width={pointWidth}
-                  style={{ backgroundColor: 'red' }}
+                  style={pointStyle}
+                  onPressStart={onPressStart}
+                  onPressEnd={onPressEnd}
                 />
-                <Point width={pointWidth} point={this.controller.x2} />
+                <Point
+                  point={this.controller.x2}
+                  width={pointWidth}
+                  style={pointStyle}
+                  onPressStart={onPressStart}
+                  onPressEnd={onPressEnd}
+                />
               </>
             )}
           </View>
@@ -108,7 +132,7 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 16,
+    // height: 16,
     justifyContent: 'center',
   },
   absolute: {
