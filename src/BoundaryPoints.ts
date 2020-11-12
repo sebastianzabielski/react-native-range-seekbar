@@ -1,14 +1,4 @@
-export interface IBoundaryPoints {
-  getFixedPoint: (
-    position: number,
-    offset: number,
-  ) => {
-    position: number;
-    realValue: number;
-  };
-}
-
-export default class BoundaryPoints implements IBoundaryPoints {
+export default class BoundaryPoints {
   begin: number;
   end: number;
 
