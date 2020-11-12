@@ -1,0 +1,53 @@
+{
+  "name": "react-native-range-seekbar",
+  "version": "1.0.0",
+  "description": "Simple React Native component based on Pan Responder.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "react-native-module-template.podspec",
+    "!.idea",
+    "!build"
+  ],
+  "scripts": {
+    "compile": "rm -rf lib && tsc -p .",
+    "lint": "eslint .",
+    "prepare": "yarn compile",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebastianzabielski/react-native-range-seekbar.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "Sebastian Zabielski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sebastianzabielski/react-native-range-seekbar/issues"
+  },
+  "homepage": "https://github.com/sebastianzabielski/react-native-range-seekbar#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/runtime": "^7.11.2",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@types/jest": "^26.0.14",
+    "@types/react-native": "^0.63.19",
+    "@types/react-test-renderer": "^16.9.3",
+    "babel-jest": "^26.3.0",
+    "eslint": "^7.9.0",
+    "eslint-plugin-simple-import-sort": "^5.0.3",
+    "jest": "^26.4.2",
+    "metro-react-native-babel-preset": "^0.63.0",
+    "react": "^16.13.1",
+    "react-native": "^0.63.2",
+    "react-test-renderer": "^16.13.1",
+    "typescript": "^4.0.3"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  }
+}
