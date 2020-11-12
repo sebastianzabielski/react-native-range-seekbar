@@ -2,8 +2,8 @@
   "name": "react-native-range-seekbar",
   "version": "1.0.0",
   "description": "Simple React Native component based on Pan Responder.",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/RangeSeekBar.js",
+  "types": "lib/RangeSeekBar.d.ts",
   "files": [
     "lib",
     "react-native-module-template.podspec",
