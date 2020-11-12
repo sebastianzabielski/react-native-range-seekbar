@@ -67,7 +67,14 @@ class Controller {
 
   _handlePointPositionChange = (withoutCallback?: boolean) => {
     if (!withoutCallback) {
-      this._onValueChange([this.x1.realValue, this.x2.realValue]);
+      let left = this.x1.realValue;
+      let right = this.x2.realValue;
+      if (right < left) {
+        const temp = left;
+        left = right;
+        right = temp;
+      }
+      this._onValueChange([left, right]);
     }
     this._activeLineUpdatePosition();
   };
