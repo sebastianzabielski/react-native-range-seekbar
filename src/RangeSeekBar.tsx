@@ -9,7 +9,7 @@ import {
 import Point from './Point';
 import Controller from './Controller';
 
-interface RangeSeekBarProps {
+export interface RangeSeekBarProps {
   activeLineHeight: number;
   pointWidth: number;
   activeLineStyle?: ViewStyle;
@@ -52,6 +52,19 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
 
   block = false;
 
+  componentDidUpdate(prevProps: RangeSeekBarProps) {
+    if (
+      this.props.minValue !== prevProps.minValue ||
+      this.props.maxValue !== prevProps.maxValue ||
+      this.props.pointWidth !== prevProps.pointWidth
+    ) {
+      this.controller.updatePropertyValues(
+        this.props.minValue,
+        this.props.maxValue,
+        this.props.pointWidth,
+      );
+    }
+  }
   onValueChange = async (values: [number, number]) => {
     this.props.onValueChange(values);
   };

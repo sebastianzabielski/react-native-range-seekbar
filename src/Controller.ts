@@ -86,8 +86,25 @@ class Controller {
     const lineBegin = x1 < x2 ? x1 : x2;
     const lineWidth = Math.abs(x1 - x2);
 
-    this.activeLineBegin.silentlySetPoint(lineBegin);
-    this.activeLineWidth.silentlySetPoint(lineWidth + this.pointWidth);
+    this.activeLineBegin.forceSetValue(lineBegin);
+    this.activeLineWidth.forceSetValue(lineWidth + this.pointWidth);
+  };
+
+  updatePropertyValues = (
+    realBegin: number,
+    realEnd: number,
+    pointWidth: number,
+  ) => {
+    this.boundaryPoints.updateRealPoints(realBegin, realEnd);
+    this.pointWidth = pointWidth;
+    if (realBegin === realEnd) {
+      this.x1.forceSetValue(this.boundaryPoints.begin, realBegin);
+      this.x2.forceSetValue(this.boundaryPoints.end, realEnd);
+    } else {
+      this.x1.fixPointPositionAfterRealValueRangeChange();
+      this.x2.fixPointPositionAfterRealValueRangeChange();
+    }
+    this._handlePointPositionChange();
   };
 }
 

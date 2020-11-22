@@ -89,8 +89,9 @@ export default class AnimatedPoint {
     return pxPerReal * realValueStep - offset;
   };
 
-  silentlySetPoint = (value: number) => {
+  forceSetValue = (value: number, realValue: number = this.realValue) => {
     this.value.setValue(value);
+    this.realValue = realValue;
   };
 
   setPoint = (value: number, withoutCallback?: boolean) => {
@@ -103,5 +104,26 @@ export default class AnimatedPoint {
       this.value.setValue(fixedPoint);
       this.onPointChange && this.onPointChange(withoutCallback);
     }
+  };
+
+  getPointPositionBasedOnRealValue = (): number => {
+    return this.getFixedPoint(this.getPointValue(), this.getOffsetValue());
+  };
+
+  fixPointPositionAfterRealValueRangeChange = () => {
+    let position: number;
+    let realValue: number | undefined;
+
+    if (this.realValue <= this.boundaryPoints.realBegin) {
+      position = this.boundaryPoints.begin;
+      realValue = this.boundaryPoints.realBegin;
+    } else if (this.realValue >= this.boundaryPoints.realEnd) {
+      position = this.boundaryPoints.end;
+      realValue = this.boundaryPoints.realEnd;
+    } else {
+      position = this.getPointPositionBasedOnRealValue();
+    }
+
+    this.forceSetValue(position, realValue);
   };
 }

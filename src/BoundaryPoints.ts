@@ -34,4 +34,9 @@ export default class BoundaryPoints {
   setEnd = (end: number) => {
     this.end = end;
   };
+
+  updateRealPoints = (realBegin: number, realEnd: number) => {
+    this.realBegin = realBegin;
+    this.realEnd = realEnd;
+  };
 }
