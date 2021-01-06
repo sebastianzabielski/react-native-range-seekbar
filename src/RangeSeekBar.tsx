@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View,
-  StyleSheet,
-  LayoutChangeEvent,
   Animated,
+  LayoutChangeEvent,
+  StyleSheet,
+  View,
   ViewStyle,
 } from 'react-native';
-import Point from './Point';
 import Controller from './Controller';
+import Point from './Point';
 
 export interface RangeSeekBarProps {
   activeLineHeight: number;
@@ -30,7 +30,7 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
   };
 
   state = {
-    loading: true,
+    initLoading: true,
   };
 
   controller: Controller;
@@ -69,11 +69,20 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
     this.props.onValueChange(values);
   };
 
+  firstUpdate = true;
   updateComponentWidth = (event: LayoutChangeEvent) => {
     const width = event.nativeEvent.layout.width - this.props.pointWidth;
     this.controller.boundaryPoints.setEnd(width);
-    this.controller.x2.setPoint(width, true);
-    this.setState({ loading: false });
+
+    const { realEnd, end } = this.controller.boundaryPoints;
+    if (this.firstUpdate) {
+      this.firstUpdate = false;
+      this.controller.x2.forceSetValue(end, realEnd);
+      this.controller.handlePointPositionChange(true);
+      this.setState({ initLoading: false });
+    } else {
+      this.controller.fixPointPosition(true);
+    }
   };
 
   renderActiveLine = () => {
@@ -95,7 +104,7 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
   };
 
   render() {
-    const { loading } = this.state;
+    const { initLoading } = this.state;
     const {
       pointWidth,
       inactiveLineStyle,
@@ -116,7 +125,7 @@ export class RangeSeekBar extends Component<RangeSeekBarProps> {
         >
           <View style={[styles.inactiveContainer, inactiveLineStyle]} />
           <View style={[styles.absolute, styles.animatedContainer]}>
-            {!loading && (
+            {!initLoading && (
               <>
                 <ActiveLine />
                 <Point

@@ -44,12 +44,12 @@ class Controller {
     this.x1 = new AnimatedPoint(
       leftPointBeginPosition,
       this.boundaryPoints,
-      this._handlePointPositionChange,
+      this.handlePointPositionChange,
     );
     this.x2 = new AnimatedPoint(
       leftPointBeginPosition,
       this.boundaryPoints,
-      this._handlePointPositionChange,
+      this.handlePointPositionChange,
     );
 
     this.activeLineBegin = new AnimatedPoint(
@@ -65,7 +65,7 @@ class Controller {
     this._onValueChange = onValueChange;
   }
 
-  _handlePointPositionChange = (withoutCallback?: boolean) => {
+  handlePointPositionChange = (withoutCallback?: boolean) => {
     if (!withoutCallback) {
       let left = this.x1.realValue;
       let right = this.x2.realValue;
@@ -97,6 +97,11 @@ class Controller {
   ) => {
     this.boundaryPoints.updateRealPoints(realBegin, realEnd);
     this.pointWidth = pointWidth;
+    this.fixPointPosition();
+  };
+
+  fixPointPosition = (withoutCallback?: boolean) => {
+    const { realBegin, realEnd } = this.boundaryPoints;
     if (realBegin === realEnd) {
       this.x1.forceSetValue(this.boundaryPoints.begin, realBegin);
       this.x2.forceSetValue(this.boundaryPoints.end, realEnd);
@@ -104,7 +109,7 @@ class Controller {
       this.x1.fixPointPositionAfterRealValueRangeChange();
       this.x2.fixPointPositionAfterRealValueRangeChange();
     }
-    this._handlePointPositionChange();
+    this.handlePointPositionChange(withoutCallback);
   };
 }
 
