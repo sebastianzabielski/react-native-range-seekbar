@@ -1,6 +1,6 @@
 {
   "name": "react-native-range-seekbar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple React Native component based on Pan Responder.",
   "main": "lib/RangeSeekBar.js",
   "types": "lib/RangeSeekBar.d.ts",
@@ -18,7 +18,10 @@
     "url": "git+https://github.com/sebastianzabielski/react-native-range-seekbar.git"
   },
   "keywords": [
-    "react"
+    "react",
+    "react-native",
+    "seekbar",
+    "slider"
   ],
   "author": "Sebastian Zabielski",
   "license": "MIT",
