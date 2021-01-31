@@ -31,11 +31,11 @@ yarn add react-native-range-seekbar
 | ~~step~~          | ~~number~~ | NO       |         |<span style="color:red"> PROPS NOT YET AVAILABLE.</span> <br/> A step that OnValueChange will be executed. For now, the value is set on 1.          |
 
 
-### Known issues
+## Known issues
 On iOS, with react-navigation, when a point is near the left edge of the screen, trying to move it may trigger gestures, e.g. returning to the previous screen. The solution is to use the `onPressStart` and` onPressEnd` methods to disable the gestures for the view while moving the point.
 
 
-### TODO
+## TODO
 - [ ] Add property `step`
 - [ ] Add the ability to set own point
 - [ ] Add a new different type of behavior when minimal and maximal values are equal. For now, in that situation, the points are spreading to the corners.
