@@ -1,16 +1,12 @@
 # react-native-range-seekbar
-____
 
 React Native component used to select range of values.
 
-IMG
 
 ## Installation
 `
 npm install --save react-native-range-seekbar
-`
-or
-`
+`<br/>or<br/>`
 yarn add react-native-range-seekbar
 `
 
@@ -32,7 +28,7 @@ yarn add react-native-range-seekbar
 
 
 ## Known issues
-On iOS, with react-navigation, when a point is near the left edge of the screen, trying to move it may trigger gestures, e.g. returning to the previous screen. The solution is to use the `onPressStart` and` onPressEnd` methods to disable the gestures for the view while moving the point.
+On iOS, with react-navigation, when a point is near the left edge of the screen, trying to move it may trigger gestures, e.g. returning to the previous screen. The solution is to use the `onPressStart` and `onPressEnd` methods to disable the gestures for the view while moving the point.
 
 
 ## TODO
